@@ -41,18 +41,7 @@ jobs:
 
     - name: Resolve Swift Package Dependencies
       run: |
-        xcodebuild -resolvePackageDependencies -scheme "bitchat (iOS)"
+        xcodebuild -resolvePackageDependencies -scheme "bitchat (macOS)"
 
-    - name: Build for MacOS (Unsigned)
-      run: |
-        xcodebuild \
-          -project bitchat.xcodeproj \
-          -scheme "bitchat (macOS)" \
-          -configuration Release \
-          CODE_SIGNING_ALLOWED=NO \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGN_ENTITLEMENTS="" \
-          build
     - name: Setup upterm session
       uses: owenthereal/action-upterm@v1
