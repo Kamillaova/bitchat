@@ -43,5 +43,5 @@ jobs:
       run: |
         xcodebuild -resolvePackageDependencies -scheme "bitchat (macOS)"
 
-    - name: Setup upterm session
-      uses: owenthereal/action-upterm@v1
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
