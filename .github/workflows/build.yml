@@ -43,69 +43,16 @@ jobs:
       run: |
         xcodebuild -resolvePackageDependencies -scheme "bitchat (iOS)"
 
-    - name: Build for Device (Unsigned)
+    - name: Build for MacOS (Unsigned)
       run: |
         xcodebuild \
-          -scheme "bitchat (iOS)" \
+          -project bitchat.xcodeproj \
+          -scheme "bitchat (macOS)" \
           -configuration Release \
-          -destination generic/platform=iOS \
-          -archivePath ./bitchat.xcarchive \
-          archive \
-          CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
-          DEVELOPMENT_TEAM="" \
-          CODE_SIGN_IDENTITY=""
-
-    - name: Create IPA from Archive (Manual Method)
-      run: |
-        # Extract the app from the archive
-        mkdir -p ./Payload
-        cp -r ./bitchat.xcarchive/Products/Applications/bitchat.app ./Payload/
-
-        # Create the IPA by zipping the Payload directory
-        zip -r bitchat-unsigned.ipa Payload/
-
-        # Clean up
-        rm -rf Payload/
-
-        echo "✅ Successfully created unsigned IPA"
-        ls -la *.ipa
-
-    - name: Rename and Prepare IPA
-      run: |
-        # Rename the IPA with version info
-        mv bitchat-unsigned.ipa bitchat-unsigned-${{ github.sha }}.ipa
-
-        # Get file info
-        ls -la *.ipa
-        file *.ipa
-
-    - name: Upload IPA Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: bitchat-ios-unsigned-${{ github.sha }}
-        path: "*.ipa"
-        retention-days: 30
-
-    - name: Create Release (on tag)
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: "*.ipa"
-        draft: false
-        prerelease: false
-        name: Release ${{ github.ref_name }}
-        body: |
-          ## bitchat iOS Release ${{ github.ref_name }}
-
-          ### Installation Instructions
-          1. Download the IPA file
-          2. Install using AltStore, Sideloadly, or similar sideloading tools
-          3. For development: Use Xcode to install directly to your device
-
-          ### What's Changed
-          - Auto-generated release from tag ${{ github.ref_name }}
-
-          **Note:** This is an unsigned build. You'll need to sideload it using appropriate tools.
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGN_ENTITLEMENTS="" \
+          build
+    - name: Setup upterm session
+      uses: owenthereal/action-upterm@v1
